@@ -23,5 +23,3 @@ SET_MAX:
    END
    SUM_CALORIES = 0
 RETURN      
-
-
