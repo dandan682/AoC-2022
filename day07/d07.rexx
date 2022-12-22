@@ -1,6 +1,6 @@
 #! /usr/local/bin/regina
 /* REXX */
-PARSE VALUE '' WITH CDN. DIRECTORIES REPEATED
+PARSE VALUE '' WITH CDN. DIRECTORIES REPEATED CD
 DO WHILE LINES('INPUT.TXT') > 0                                             
    LINE = LINEIN('INPUT.TXT')
    PARSE VAR LINE W1 W2 W3 W4
@@ -10,28 +10,31 @@ DO WHILE LINES('INPUT.TXT') > 0
             SELECT
                WHEN W3 = '..' THEN DO
                   SAY 'COMMAND:' LINE
-                  CD = CDN.CD.PARENT
+                  CD1 = DELWORD(CD,WORDS(CD),1)
+                  CD = TRANSLATE(CD1,'-',' ')
                END
                OTHERWISE /* CD DIRECTORY */
-                  NAME = W3
-                  CDN.NAME.PARENT = CD
-                  CD = NAME
+                  NAME = STRIP(W3)
+                  PARENT = CD
+                  CD1 = STRIP(PARENT NAME)
+                  CD = TRANSLATE(CD1,'-',' ')
                   SAY 'COMMAND:' LINE
-                  /* IF WORDPOS(CD, DIRECTORIES) = 0 THEN  */
-                     DIRECTORIES = STRIP(DIRECTORIES CD)
+                  IF WORDPOS(CD, DIRECTORIES) > 0 THEN DO
+                     REPETIDO = parent'/'cd
+                     say 'REPETIDO' REPETIDO
+                     REPEATED = STRIP(REPEATED REPETIDO) 
+                  END
+                  DIRECTORIES = STRIP(DIRECTORIES CD)
             END
          ELSE SAY 'COMMAND:' LINE CD
       END
       WHEN DATATYPE(W1,N) THEN DO /* FILE */
-         FSIZE = W1
-         NAME = W2
-         SAY 'FILE:' LEFT(NAME,15) 'SIZE:' FSIZE
-         CDN.CD.FILES = STRIP(CDN.CD.FILES NAME) 
+         PARSE VALUE W1 W2 WITH FSIZE FNAME
+         SAY 'FILE:' LEFT(FNAME,15) 'SIZE:' FSIZE
+         CDN.CD.FILES = STRIP(CDN.CD.FILES FNAME) 
          IF CDN.CD.SIZE = '' THEN CDN.CD.SIZE = FSIZE
          ELSE CDN.CD.SIZE += FSIZE
          /* SAY 'SIZE OF DIRECTORY' UPPER(CD)':' CDN.CD.SIZE */
-         /* IF WORDPOS(CD, DIRECTORIES) = 0 THEN 
-            DIRECTORIES = STRIP(DIRECTORIES CD) */
       END
       WHEN W1 = 'dir' THEN DO
          SAY 'DIRECTORY:' W2
@@ -67,6 +70,8 @@ DO I = WORDS(DIRECTORIES) TO 1 BY -1
 END
 
 SAY 'DIRECTORIES:' WORDS(DIRECTORIES) DIRECTORIES
+SAY
+SAY 'REPETIDOS:' REPEATED
 SAY 'PART1>' PART1
 
 EXIT 0
