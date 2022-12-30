@@ -2,6 +2,7 @@
 /* REXX */
 PARSE VALUE '' WITH CDN. DIRECTORIES REPEATED CD
 
+
 DO WHILE LINES('INPUT.TXT') > 0                                             
    LINE = LINEIN('INPUT.TXT')
    PARSE VAR LINE W1 W2 W3 W4
